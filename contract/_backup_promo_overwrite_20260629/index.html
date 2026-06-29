@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>통영청년홍보요청</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#guide" aria-label="통영청년홍보요청 처음으로">
+        <span class="brand-mark">TY</span>
+        <span>
+          <strong>통영청년홍보요청</strong>
+          <em>통영시 청년센터</em>
+        </span>
+      </a>
+      <nav class="top-nav" aria-label="주요 단계">
+        <a href="#guide">안내</a>
+        <a href="#request">요청서 작성</a>
+        <a href="#after">접수 후 안내</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="guide" class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Tongyeong Youth Center</p>
+          <h1>통영 청년에게 알릴 소식을 보내주세요</h1>
+          <p class="hero-text">
+            교육, 행사, 세미나, 정책, 지원사업처럼 통영 청년에게 도움이 되는 정보를
+            센터가 검토한 뒤 통영청년모여라 카톡방, 홈페이지, 카카오톡 채널 등에
+            홍보할 수 있도록 접수하는 창구입니다.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#request">홍보 요청하기</a>
+            <a class="button ghost" href="#principles">접수 기준 보기</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="접수 요약">
+          <strong>접수 전 확인</strong>
+          <ul>
+            <li>공문은 선택 첨부입니다.</li>
+            <li>홍보 게시는 센터 검토 후 결정됩니다.</li>
+            <li>접수 후 담당자에게 별도 연락할 수 있습니다.</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="info-grid" aria-label="접수 안내">
+        <article>
+          <span class="card-number">01</span>
+          <h2>무엇을 접수하나요?</h2>
+          <p>청년 대상 교육, 모집, 행사, 공모, 상담, 정책, 지원사업, 세미나 정보를 접수합니다.</p>
+        </article>
+        <article>
+          <span class="card-number">02</span>
+          <h2>어디에 홍보되나요?</h2>
+          <p>통영청년모여라 카톡방, 통영시 청년센터 홈페이지, 카카오톡 채널 등으로 검토합니다.</p>
+        </article>
+        <article>
+          <span class="card-number">03</span>
+          <h2>어떤 자료가 필요한가요?</h2>
+          <p>요약 내용과 담당자 연락처, 카드뉴스, 포스터, PDF, 영상, 공문 등을 함께 남겨주세요.</p>
+        </article>
+      </section>
+
+      <section id="principles" class="principles">
+        <div>
+          <p class="eyebrow">Review Principles</p>
+          <h2>센터 검토 후 홍보합니다</h2>
+        </div>
+        <div class="principle-list">
+          <p>통영 청년에게 직접 도움이 되는 내용인지 확인합니다.</p>
+          <p>자료가 불명확하거나 보완이 필요하면 담당자에게 연락합니다.</p>
+          <p>상업성, 정치·종교 목적, 허위·과장 정보는 홍보가 어려울 수 있습니다.</p>
+        </div>
+      </section>
+
+      <section id="request" class="form-section">
+        <div class="section-heading">
+          <p class="eyebrow">Request Form</p>
+          <h2>홍보요청서 작성</h2>
+          <p>필수 정보를 입력하면 임시 접수번호와 함께 접수 확인 화면을 볼 수 있습니다.</p>
+        </div>
+
+        <form id="requestForm" class="request-form" novalidate>
+          <fieldset>
+            <legend>기관 및 담당자</legend>
+            <div class="form-grid">
+              <label>
+                기관명 <span aria-hidden="true">*</span>
+                <input name="organization" required placeholder="예: 통영문화재단" />
+              </label>
+              <label>
+                기관 유형
+                <select name="organizationType">
+                  <option value="">선택</option>
+                  <option>공공기관</option>
+                  <option>교육기관</option>
+                  <option>비영리단체</option>
+                  <option>기업</option>
+                  <option>청년단체</option>
+                  <option>기타</option>
+                </select>
+              </label>
+              <label>
+                담당자명 <span aria-hidden="true">*</span>
+                <input name="contactName" required placeholder="홍보 요청 담당자명" />
+              </label>
+              <label>
+                연락처 <span aria-hidden="true">*</span>
+                <input name="phone" required inputmode="tel" placeholder="010-0000-0000" />
+              </label>
+              <label>
+                이메일 <span aria-hidden="true">*</span>
+                <input name="email" required type="email" placeholder="name@example.kr" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>홍보 내용</legend>
+            <div class="form-grid">
+              <label class="wide">
+                제목 <span aria-hidden="true">*</span>
+                <input name="title" required placeholder="청년에게 보여질 행사·정보 제목" />
+              </label>
+              <label>
+                구분 <span aria-hidden="true">*</span>
+                <select name="category" required>
+                  <option value="">선택</option>
+                  <option>교육</option>
+                  <option>행사</option>
+                  <option>세미나</option>
+                  <option>정책</option>
+                  <option>지원사업</option>
+                  <option>모집</option>
+                  <option>기타 정보</option>
+                </select>
+              </label>
+              <label>
+                대상 <span aria-hidden="true">*</span>
+                <input name="audience" required placeholder="예: 통영 거주 청년, 예비창업자" />
+              </label>
+              <label>
+                일정 <span aria-hidden="true">*</span>
+                <input name="schedule" required placeholder="예: 2026.7.15. 14:00" />
+              </label>
+              <label>
+                장소
+                <input name="place" placeholder="온라인이면 온라인으로 입력" />
+              </label>
+              <label>
+                신청 방법
+                <input name="applyMethod" placeholder="신청 링크, 전화, 이메일 등" />
+              </label>
+              <label>
+                참가비
+                <select name="fee">
+                  <option>무료</option>
+                  <option>유료</option>
+                  <option>일부 유료</option>
+                  <option>해당 없음</option>
+                </select>
+              </label>
+              <label class="wide">
+                내용 요약 <span aria-hidden="true">*</span>
+                <textarea name="summary" required rows="5" placeholder="목적, 주요 내용, 청년에게 도움이 되는 점을 3~5문장으로 적어주세요."></textarea>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>홍보 채널 및 첨부자료</legend>
+            <p class="field-note">공문은 필수가 아닙니다. 가지고 있는 홍보자료를 최대한 함께 남겨주세요.</p>
+            <div class="check-grid" aria-label="희망 홍보 채널">
+              <label><input type="checkbox" name="channels" value="통영청년모여라 카톡방" /> 통영청년모여라 카톡방</label>
+              <label><input type="checkbox" name="channels" value="통영시 청년센터 홈페이지" /> 통영시 청년센터 홈페이지</label>
+              <label><input type="checkbox" name="channels" value="카카오톡 채널" /> 카카오톡 채널</label>
+              <label><input type="checkbox" name="channels" value="기타" /> 기타</label>
+            </div>
+            <div class="form-grid file-grid">
+              <label>
+                카드뉴스·포스터
+                <input name="imageFiles" type="file" accept="image/*,.pdf" multiple />
+              </label>
+              <label>
+                공문 또는 안내문
+                <input name="documentFiles" type="file" accept=".pdf,.hwp,.hwpx,.doc,.docx" multiple />
+              </label>
+              <label>
+                영상 원본
+                <input name="videoFiles" type="file" accept="video/*" multiple />
+              </label>
+              <label>
+                영상·신청 링크
+                <input name="links" placeholder="유튜브, 구글드라이브, 신청 페이지 링크" />
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="consent">
+            <input name="consent" type="checkbox" required />
+            입력한 정보와 첨부자료가 홍보 검토, 담당자 연락, 홍보물 게시에 활용되는 것에 동의합니다.
+          </label>
+
+          <div id="formMessage" class="form-message" role="alert" aria-live="polite"></div>
+
+          <div class="form-actions">
+            <button class="button primary" type="submit">접수 확인하기</button>
+            <button class="button secondary" type="reset">초기화</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="after" class="after-section">
+        <div class="section-heading">
+          <p class="eyebrow">Receipt</p>
+          <h2>접수 확인</h2>
+          <p>요청서를 작성하면 아래에 접수번호와 요약 내용이 표시됩니다.</p>
+        </div>
+        <div id="receipt" class="receipt empty">
+          <strong>아직 작성된 요청서가 없습니다.</strong>
+          <p>홍보요청서를 작성하면 접수번호와 검토 안내가 이곳에 나타납니다.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <strong>통영시 청년센터</strong>
+      <span>실제 운영 시 이 페이지의 제출 버튼은 구글폼 또는 구글드라이브 접수 링크와 연결됩니다.</span>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -340,61 +340,6 @@
                 <label>계좌번호 <input name="bankAccount" placeholder="입금받을 계좌번호를 적어주세요." /></label>
                 <label>예금주 <input name="accountHolder" placeholder="비워두면 상호명으로 표시됩니다." /></label>
               </fieldset>
-
-              <fieldset class="wide-fieldset schedule-input-fieldset">
-                <legend>예정공정표</legend>
-                <p class="fieldset-note">과업내용별 수행 구간을 입력하면 예정공정표에 막대형 일정표로 반영됩니다.</p>
-                <div class="schedule-options">
-                  <label>
-                    기준
-                    <select name="scheduleUnit">
-                      <option value="주차">주차</option>
-                      <option value="회차">회차</option>
-                    </select>
-                  </label>
-                  <label>
-                    전체 칸 수
-                    <input name="scheduleTotalSteps" type="number" min="1" max="20" value="10" />
-                  </label>
-                </div>
-                <div class="schedule-row-head">
-                  <span>과업내용</span>
-                  <span>시작</span>
-                  <span>종료</span>
-                  <span>보고/비고</span>
-                </div>
-                <div data-schedule-rows>
-                  <div class="schedule-input-row" data-schedule-row>
-                    <input data-schedule-field="task" value="착수 및 자료검토" placeholder="과업내용" />
-                    <input data-schedule-field="start" type="number" min="1" value="1" />
-                    <input data-schedule-field="end" type="number" min="1" value="1" />
-                    <input data-schedule-field="note" value="착수보고" placeholder="보고/비고" />
-                    <button type="button" class="secondary row-remove" data-remove-schedule-row>삭제</button>
-                  </div>
-                  <div class="schedule-input-row" data-schedule-row>
-                    <input data-schedule-field="task" value="과업 수행" placeholder="과업내용" />
-                    <input data-schedule-field="start" type="number" min="1" value="2" />
-                    <input data-schedule-field="end" type="number" min="1" value="8" />
-                    <input data-schedule-field="note" placeholder="보고/비고" />
-                    <button type="button" class="secondary row-remove" data-remove-schedule-row>삭제</button>
-                  </div>
-                  <div class="schedule-input-row" data-schedule-row>
-                    <input data-schedule-field="task" value="중간 점검" placeholder="과업내용" />
-                    <input data-schedule-field="start" type="number" min="1" value="5" />
-                    <input data-schedule-field="end" type="number" min="1" value="5" />
-                    <input data-schedule-field="note" value="중간보고" placeholder="보고/비고" />
-                    <button type="button" class="secondary row-remove" data-remove-schedule-row>삭제</button>
-                  </div>
-                  <div class="schedule-input-row" data-schedule-row>
-                    <input data-schedule-field="task" value="결과 정리 및 제출" placeholder="과업내용" />
-                    <input data-schedule-field="start" type="number" min="1" value="9" />
-                    <input data-schedule-field="end" type="number" min="1" value="10" />
-                    <input data-schedule-field="note" value="최종보고" placeholder="보고/비고" />
-                    <button type="button" class="secondary row-remove" data-remove-schedule-row>삭제</button>
-                  </div>
-                </div>
-                <button type="button" class="secondary small-button" data-add-schedule-row>과업 추가</button>
-              </fieldset>
             </div>
           </div>
 
@@ -464,10 +409,6 @@
                   <label class="estimate-fee-card">
                     <span class="fee-label-row">B. 일반관리비 <em>한도 <strong data-estimate-management-limit>0원</strong></em></span>
                     <input name="managementFee" inputmode="numeric" placeholder="일반관리비 입력" />
-                    <span class="fee-status">
-                      <em>현재 입력 <strong data-estimate-management-used>0원</strong></em>
-                      <em>남은 한도 <strong data-estimate-management-remaining>0원</strong></em>
-                    </span>
                   </label>
                 </div>
                 <div class="estimate-explain">일반관리비는 인건비와 운영비 합계(A)의 5% 이내로 입력할 수 있습니다.</div>
@@ -477,10 +418,6 @@
                   <label class="estimate-fee-card">
                     <span class="fee-label-row">C. 기업이윤 <em>한도 <strong data-estimate-profit-limit>0원</strong></em></span>
                     <input name="profitFee" inputmode="numeric" placeholder="기업이윤 입력" />
-                    <span class="fee-status">
-                      <em>현재 입력 <strong data-estimate-profit-used>0원</strong></em>
-                      <em>남은 한도 <strong data-estimate-profit-remaining>0원</strong></em>
-                    </span>
                   </label>
                 </div>
                 <div class="estimate-explain">기업이윤은 인건비·운영비·일반관리비 합계(A+B)의 10% 이내로 입력할 수 있습니다.</div>

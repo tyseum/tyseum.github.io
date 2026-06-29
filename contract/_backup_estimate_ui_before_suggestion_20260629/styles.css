@@ -1002,60 +1002,11 @@ select:disabled {
   font-weight: 900;
 }
 
-.fee-status {
-  display: flex;
-  justify-content: flex-end;
-  gap: 14px;
-  color: #7b431f;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.fee-status em {
-  font-style: normal;
-}
-
-.fee-status strong {
-  color: var(--warm-strong);
-}
-
 .estimate-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   margin-top: 12px;
-}
-
-.schedule-input-fieldset {
-  grid-column: 1 / -1;
-}
-
-.schedule-options {
-  display: grid;
-  grid-template-columns: 160px 160px;
-  gap: 12px;
-}
-
-.schedule-row-head,
-.schedule-input-row {
-  display: grid;
-  grid-template-columns: minmax(240px, 1fr) 90px 90px minmax(180px, 0.7fr) 72px;
-  gap: 8px;
-  align-items: center;
-}
-
-.schedule-row-head {
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.schedule-input-row {
-  margin-top: 8px;
-}
-
-.schedule-input-row input {
-  min-height: 36px;
 }
 
 .field-help {
@@ -1369,81 +1320,6 @@ select:disabled {
 .schedule-table td {
   height: 10.5mm;
   vertical-align: middle;
-}
-
-.schedule-plan-table {
-  table-layout: fixed;
-  margin-top: 4mm;
-}
-
-.schedule-plan-table .schedule-task-col {
-  width: 24%;
-}
-
-.schedule-plan-table .schedule-step-col {
-  width: auto;
-}
-
-.schedule-plan-table th,
-.schedule-plan-table td {
-  height: 11mm;
-  padding: 3px;
-  font-size: 11px;
-  vertical-align: middle;
-}
-
-.schedule-plan-table thead th {
-  background: #f1f5f9;
-  font-weight: 900;
-}
-
-.schedule-plan-table tbody th {
-  text-align: left;
-  text-align-last: left;
-}
-
-.schedule-corner {
-  position: relative;
-  overflow: hidden;
-  min-height: 16mm;
-  background:
-    linear-gradient(to top right, transparent calc(50% - 0.5px), #111 calc(50% - 0.5px), #111 calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-    #f1f5f9;
-}
-
-.schedule-corner span,
-.schedule-corner em {
-  position: absolute;
-  font-style: normal;
-  font-weight: 900;
-}
-
-.schedule-corner span {
-  left: 8px;
-  bottom: 6px;
-}
-
-.schedule-corner em {
-  top: 6px;
-  right: 8px;
-}
-
-.schedule-plan-table td.active-step {
-  background: #d9ecff;
-}
-
-.schedule-plan-table td.active-step span {
-  display: block;
-  height: 5mm;
-  border-radius: 2px;
-  background: #8fc5f4;
-}
-
-.schedule-note-row th,
-.schedule-note-row td {
-  height: 9mm;
-  font-size: 10px;
-  font-weight: 800;
 }
 
 .claim-table {

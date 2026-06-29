@@ -39,8 +39,7 @@ const state = {
     registered: "",
     use: ""
   },
-  selectedDocuments: new Set(documents),
-  estimateReferenceBalance: null
+  selectedDocuments: new Set(documents)
 };
 
 const form = document.querySelector("#contractForm");
@@ -128,7 +127,6 @@ function getData() {
       duration,
       endDate
     },
-    schedule: getScheduleData(data),
     participants: {
       participant: data.participant || "",
       participantRole: data.participantRole || "",
@@ -187,29 +185,6 @@ function getEstimateData(formData) {
     balance: total ? supply - finalSupply : 0,
     managementRate: subtotal ? (managementFee / subtotal) * 100 : 0,
     profitRate: profitBase ? (profitFee / profitBase) * 100 : 0
-  };
-}
-
-function getScheduleData(formData) {
-  const totalSteps = Math.min(Math.max(Number(formData.scheduleTotalSteps || 10), 1), 20);
-  const rows = [...document.querySelectorAll("[data-schedule-row]")]
-    .map((row) => {
-      const field = (name) => row.querySelector(`[data-schedule-field="${name}"]`)?.value.trim() || "";
-      const start = Math.min(Math.max(Number(field("start") || 1), 1), totalSteps);
-      const end = Math.min(Math.max(Number(field("end") || start), start), totalSteps);
-      return {
-        task: field("task"),
-        start,
-        end,
-        note: field("note")
-      };
-    })
-    .filter((row) => row.task);
-
-  return {
-    unit: formData.scheduleUnit || "주차",
-    totalSteps,
-    rows
   };
 }
 
@@ -389,44 +364,24 @@ function syncEstimateSummary(data) {
   setText("[data-estimate-subtotal]", data.estimate.subtotal);
   setText("[data-estimate-management-limit]", data.estimate.managementLimit);
   setText("[data-estimate-profit-limit]", data.estimate.profitLimit);
-  setText("[data-estimate-management-used]", data.estimate.managementFee);
-  setText("[data-estimate-profit-used]", data.estimate.profitFee);
-  setText("[data-estimate-management-remaining]", Math.max(data.estimate.managementLimit - data.estimate.managementFee, 0));
-  setText("[data-estimate-profit-remaining]", Math.max(data.estimate.profitLimit - data.estimate.profitFee, 0));
   setText("[data-estimate-final-supply]", data.estimate.finalSupply);
   const balanceCard = document.querySelector("[data-estimate-balance-card]");
   const balanceMessage = document.querySelector("[data-estimate-balance-message]");
   if (balanceCard && balanceMessage) {
     const hasTotal = data.estimate.total > 0;
     const hasFeeInput = data.estimate.managementFee > 0 || data.estimate.profitFee > 0;
-    const hasReferenceBalance = state.estimateReferenceBalance !== null;
-    const displayBalance = hasReferenceBalance && data.estimate.balance !== 0 ? state.estimateReferenceBalance : data.estimate.balance;
-    const shouldShowBalance = hasTotal && (hasFeeInput || hasReferenceBalance);
-    balanceCard.classList.toggle("empty", !shouldShowBalance);
-    balanceCard.classList.toggle("over", shouldShowBalance && displayBalance < 0);
-    balanceCard.classList.toggle("matched", shouldShowBalance && displayBalance === 0);
-    balanceMessage.innerHTML = !shouldShowBalance
+    balanceCard.classList.toggle("empty", !hasTotal || !hasFeeInput);
+    balanceCard.classList.toggle("over", hasTotal && hasFeeInput && data.estimate.balance < 0);
+    balanceCard.classList.toggle("matched", hasTotal && hasFeeInput && data.estimate.balance === 0);
+    balanceMessage.innerHTML = !hasTotal || !hasFeeInput
       ? "<span>E. 최종 차액</span><em>일반관리비와 기업이윤을 입력하면 계산됩니다.</em>"
-      : displayBalance > 0
-        ? `<span>E. 최종 차액</span><strong class="adjustment-line">입력한 총사업비와 같아지려면 <b>+${formatMoney(displayBalance)}</b> 만큼 조정이 필요합니다.</strong><em>${estimateAdjustmentHint(data.estimate, displayBalance)}</em>`
-      : displayBalance < 0
-          ? `<span>E. 최종 차액</span><strong class="adjustment-line">입력한 총사업비와 같아지려면 <b>-${formatMoney(Math.abs(displayBalance))}</b> 만큼 조정이 필요합니다.</strong><em>일반관리비 또는 기업이윤에서 ${formatMoney(Math.abs(displayBalance))}을 줄이면 0원이 됩니다.</em>`
+      : data.estimate.balance > 0
+        ? `<span>E. 최종 차액</span><strong class="adjustment-line">입력한 총사업비와 같아지려면 <b>+${formatMoney(data.estimate.balance)}</b> 만큼 조정이 필요합니다.</strong>`
+      : data.estimate.balance < 0
+          ? `<span>E. 최종 차액</span><strong class="adjustment-line">입력한 총사업비와 같아지려면 <b>-${formatMoney(Math.abs(data.estimate.balance))}</b> 만큼 조정이 필요합니다.</strong>`
           : "<span>E. 최종 차액</span><strong>0원</strong><em>공급가액과 입력 금액이 맞습니다.</em>";
   }
 
-}
-
-function estimateAdjustmentHint(estimate, balanceValue = estimate.balance) {
-  const balance = Math.max(balanceValue, 0);
-  const managementRemaining = Math.max(estimate.managementLimit - estimate.managementFee, 0);
-  const profitRemaining = Math.max(estimate.profitLimit - estimate.profitFee, 0);
-  if (!balance) return "";
-  if (balance <= profitRemaining) return `기업이윤에 ${formatMoney(balance)}을 더 입력하면 0원이 됩니다.`;
-  if (balance <= managementRemaining) return `일반관리비에 ${formatMoney(balance)}을 더 입력하면 0원이 됩니다.`;
-  if (balance <= managementRemaining + profitRemaining) {
-    return `일반관리비와 기업이윤에 나누어 ${formatMoney(balance)}을 더 입력하면 0원이 됩니다.`;
-  }
-  return `남은 한도 안에서는 ${formatMoney(balance)}을 모두 채우기 어렵습니다. 인건비 또는 운영비 조정이 필요합니다.`;
 }
 
 function requiredMissing(data) {
@@ -672,11 +627,11 @@ function estimateRowsHtml(rows, fallbackType) {
     .join("");
 }
 
-function estimateAttachmentTable(data, title = "붙임. 견적내역서") {
+function estimateAttachmentTable(data) {
   const estimate = data.estimate;
   return `
     <section class="estimate-attachment">
-      <h3>${title}</h3>
+      <h3>붙임. 견적내역서</h3>
       <table class="doc-table estimate-doc-table">
         <colgroup>
           <col class="estimate-type-col" />
@@ -703,48 +658,42 @@ function estimateAttachmentTable(data, title = "붙임. 견적내역서") {
 }
 
 function startupDetailTable(data) {
-  return estimateAttachmentTable(data, "착수내역");
-}
-
-function schedulePlanTable(data) {
-  const schedule = data.schedule;
-  const rows = schedule.rows.length
-    ? schedule.rows
-    : [{ task: data.contract.title || "과업 수행", start: 1, end: schedule.totalSteps, note: "" }];
-  const steps = Array.from({ length: schedule.totalSteps }, (_, index) => index + 1);
-  const notesByStep = steps.map((step) =>
-    rows
-      .filter((row) => row.note && row.end === step)
-      .map((row) => row.note)
-      .join(" / ")
-  );
-
   return `
-    <table class="doc-table schedule-plan-table">
+    <table class="doc-table startup-detail-table">
       <colgroup>
-        <col class="schedule-task-col" />
-        ${steps.map(() => `<col class="schedule-step-col" />`).join("")}
+        <col class="startup-type-col" />
+        <col class="startup-detail-col" />
+        <col class="startup-unit-col" />
+        <col class="startup-qty-col" />
+        <col class="startup-price-col" />
+        <col class="startup-amount-col" />
+        <col class="startup-note-col" />
       </colgroup>
       <thead>
         <tr>
-          <th class="schedule-corner"><span>과업내용</span><em>공정(${schedule.unit})</em></th>
-          ${steps.map((step) => `<th>${step}</th>`).join("")}
+          <th>구분</th>
+          <th>산출내역</th>
+          <th>단위</th>
+          <th>수량</th>
+          <th>단가</th>
+          <th>금액</th>
+          <th>비고</th>
         </tr>
       </thead>
       <tbody>
-        ${rows
-          .map(
-            (row, index) => `
-              <tr>
-                <th>${index + 1}. ${row.task}</th>
-                ${steps.map((step) => `<td class="${step >= row.start && step <= row.end ? "active-step" : ""}">${step >= row.start && step <= row.end ? "<span></span>" : ""}</td>`).join("")}
-              </tr>
-            `
-          )
-          .join("")}
-        <tr class="schedule-note-row">
-          <th>보고</th>
-          ${notesByStep.map((note) => `<td>${note}</td>`).join("")}
+        <tr>
+          <td>용역비</td>
+          <td>${data.contract.title || ""}</td>
+          <td>식</td>
+          <td>1</td>
+          <td>${formatMoney(data.contract.amount)}</td>
+          <td>${formatMoney(data.contract.amount)}</td>
+          <td></td>
+        </tr>
+        <tr class="total-row">
+          <th colspan="5">합계</th>
+          <td>${formatMoney(data.contract.amount)}</td>
+          <td></td>
         </tr>
       </tbody>
     </table>
@@ -992,7 +941,16 @@ function docBody(name, data) {
     "재직증명서": employmentCertificate(data, data.participants.agent || data.contractor.ceo, data.participants.agentRole || ""),
     "재직증명서(참여자)": employmentCertificate(data, data.participants.participant, data.participants.participantRole || ""),
     "예정공정표": `${contractInfoTable(data, [], { includeAmount: false })}
-      ${schedulePlanTable(data)}${contractorSignatureTable(data)}`,
+      <table class="doc-table schedule-table">
+        <colgroup>
+          <col class="schedule-label-col" />
+          <col class="schedule-step-col" />
+          <col class="schedule-work-col" />
+          <col class="schedule-step-col" />
+        </colgroup>
+        <thead><tr><th>구분</th><th>착수</th><th>중간 수행</th><th>완료</th></tr></thead>
+        <tbody><tr><td>${data.contract.title || ""}</td><td>${formatDate(data.period.startDate)}</td><td>계약기간 중 과업 수행</td><td>${formatDate(data.period.endDate)}</td></tr></tbody>
+      </table>${contractorSignatureTable(data)}`,
     "착수내역서": `${contractInfoTable(data, [], { includeAmount: false })}
       ${startupDetailTable(data)}${contractorSignatureTable(data)}`,
     "보안각서": `${contractInfoTable(data, [], { includeAmount: false })}
@@ -1158,18 +1116,6 @@ function estimateRowTemplate(type) {
   `;
 }
 
-function scheduleRowTemplate() {
-  return `
-    <div class="schedule-input-row" data-schedule-row>
-      <input data-schedule-field="task" placeholder="과업내용" />
-      <input data-schedule-field="start" type="number" min="1" value="1" />
-      <input data-schedule-field="end" type="number" min="1" value="1" />
-      <input data-schedule-field="note" placeholder="보고/비고" />
-      <button type="button" class="secondary row-remove" data-remove-schedule-row>삭제</button>
-    </div>
-  `;
-}
-
 document.querySelectorAll("[data-screen]").forEach((button) => {
   button.addEventListener("click", () => showScreen(button.dataset.screen));
 });
@@ -1187,14 +1133,6 @@ form.addEventListener("change", syncComputedFields);
 
 ["managementFee", "profitFee"].forEach((name) => {
   form.elements[name]?.addEventListener("keyup", () => alertEstimateFeeLimit(name));
-  form.elements[name]?.addEventListener("focus", () => {
-    state.estimateReferenceBalance = getData().estimate.balance;
-    syncComputedFields();
-  });
-  form.elements[name]?.addEventListener("blur", () => {
-    state.estimateReferenceBalance = null;
-    syncComputedFields();
-  });
 });
 
 form.addEventListener("click", (event) => {
@@ -1209,19 +1147,6 @@ form.addEventListener("click", (event) => {
   const removeButton = event.target.closest("[data-remove-estimate-row]");
   if (removeButton) {
     removeButton.closest("[data-estimate-row]")?.remove();
-    syncComputedFields();
-  }
-
-  const addScheduleButton = event.target.closest("[data-add-schedule-row]");
-  if (addScheduleButton) {
-    document.querySelector("[data-schedule-rows]")?.insertAdjacentHTML("beforeend", scheduleRowTemplate());
-    syncComputedFields();
-    return;
-  }
-
-  const removeScheduleButton = event.target.closest("[data-remove-schedule-row]");
-  if (removeScheduleButton) {
-    removeScheduleButton.closest("[data-schedule-row]")?.remove();
     syncComputedFields();
   }
 });
