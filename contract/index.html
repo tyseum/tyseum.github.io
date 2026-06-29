@@ -344,12 +344,14 @@
               <fieldset class="wide-fieldset schedule-input-fieldset">
                 <legend>예정공정표</legend>
                 <p class="fieldset-note">과업내용별 수행 구간을 입력하면 예정공정표에 막대형 일정표로 반영됩니다.</p>
+                <p class="field-help" data-schedule-recommendation>공기(일)를 기준으로 적절한 기준과 칸 수를 추천합니다.</p>
                 <div class="schedule-options">
                   <label>
                     기준
                     <select name="scheduleUnit">
+                      <option value="일">일</option>
                       <option value="주차">주차</option>
-                      <option value="회차">회차</option>
+                      <option value="월">월</option>
                     </select>
                   </label>
                   <label>

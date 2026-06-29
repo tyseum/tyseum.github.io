@@ -328,12 +328,42 @@ function chunkToKorean(value) {
 
 function syncComputedFields() {
   formatMoneyInputs();
+  applyScheduleRecommendation();
   const data = getData();
   form.elements.guarantee.value = data.contract.amount ? formatMoney(data.contract.guarantee) : "";
   form.elements.endDate.value = data.period.endDate ? formatDate(data.period.endDate) : "";
   syncAmountDisplays(data);
   syncEstimateSummary(data);
   markMissingEstimateUnits();
+}
+
+function recommendScheduleScale(duration) {
+  const days = Number(duration || 0);
+  if (!days) return { unit: "주차", totalSteps: 10, label: "공기(일)를 입력하면 기준과 칸 수를 추천합니다." };
+  if (days <= 10) {
+    return { unit: "일", totalSteps: Math.min(days, 20), label: `${days}일 공기 기준으로 일 단위를 추천합니다.` };
+  }
+  if (days <= 60) {
+    const weeks = Math.ceil(days / 7);
+    return { unit: "주차", totalSteps: Math.min(weeks, 20), label: `${days}일 공기 기준으로 주차 단위를 추천합니다.` };
+  }
+  const months = Math.ceil(days / 30);
+  return { unit: "월", totalSteps: Math.min(months, 20), label: `${days}일 공기 기준으로 월 단위를 추천합니다.` };
+}
+
+function applyScheduleRecommendation() {
+  const durationInput = form.elements.duration;
+  const unitInput = form.elements.scheduleUnit;
+  const totalStepsInput = form.elements.scheduleTotalSteps;
+  const note = document.querySelector("[data-schedule-recommendation]");
+  if (!durationInput || !unitInput || !totalStepsInput) return;
+  const recommendation = recommendScheduleScale(durationInput.value);
+  if (durationInput.dataset.lastRecommendedDuration !== String(durationInput.value || "")) {
+    unitInput.value = recommendation.unit;
+    totalStepsInput.value = recommendation.totalSteps;
+    durationInput.dataset.lastRecommendedDuration = String(durationInput.value || "");
+  }
+  if (note) note.textContent = `${recommendation.label} 필요하면 기준과 전체 칸 수는 직접 수정할 수 있습니다.`;
 }
 
 function alertEstimateFeeLimit(inputName) {
