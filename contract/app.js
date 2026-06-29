@@ -262,6 +262,39 @@ function calculateEndDate(startDate, duration) {
   return date.toISOString().slice(0, 10);
 }
 
+function parseDate(value) {
+  if (!value) return null;
+  const date = new Date(`${value}T00:00:00`);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function addMonths(date, months) {
+  return new Date(date.getFullYear(), date.getMonth() + months, 1);
+}
+
+function monthCountInclusive(startDate, endDate) {
+  const start = parseDate(startDate);
+  const end = parseDate(endDate);
+  if (!start || !end || end < start) return 0;
+  return (end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth() + 1;
+}
+
+function scheduleStepLabels(data) {
+  const schedule = data.schedule;
+  const steps = Array.from({ length: schedule.totalSteps }, (_, index) => index + 1);
+  if (schedule.unit !== "월") return steps.map(String);
+
+  const start = parseDate(data.period.startDate);
+  if (!start) return steps.map((step) => `${step}월`);
+
+  const months = steps.map((_, index) => addMonths(start, index));
+  const hasMultipleYears = new Set(months.map((date) => date.getFullYear())).size > 1;
+  return months.map((date) => {
+    const month = date.getMonth() + 1;
+    return hasMultipleYears ? `${date.getFullYear()}.${month}` : `${month}월`;
+  });
+}
+
 function formatDate(value) {
   if (!value) return "";
   const [year, month, day] = value.split("-");
@@ -337,7 +370,7 @@ function syncComputedFields() {
   markMissingEstimateUnits();
 }
 
-function recommendScheduleScale(duration) {
+function recommendScheduleScale(duration, startDate = "") {
   const days = Number(duration || 0);
   if (!days) return { unit: "주차", totalSteps: 10, label: "공기(일)를 입력하면 기준과 칸 수를 추천합니다." };
   if (days <= 10) {
@@ -347,8 +380,9 @@ function recommendScheduleScale(duration) {
     const weeks = Math.ceil(days / 7);
     return { unit: "주차", totalSteps: Math.min(weeks, 20), label: `${days}일 공기 기준으로 주차 단위를 추천합니다.` };
   }
-  const months = Math.ceil(days / 30);
-  return { unit: "월", totalSteps: Math.min(months, 20), label: `${days}일 공기 기준으로 월 단위를 추천합니다.` };
+  const endDate = calculateEndDate(startDate, days);
+  const months = monthCountInclusive(startDate, endDate) || Math.ceil(days / 30);
+  return { unit: "월", totalSteps: Math.min(months, 20), label: `${days}일 공기 기준으로 계약기간의 실제 월 표시를 추천합니다.` };
 }
 
 function applyScheduleRecommendation() {
@@ -357,11 +391,12 @@ function applyScheduleRecommendation() {
   const totalStepsInput = form.elements.scheduleTotalSteps;
   const note = document.querySelector("[data-schedule-recommendation]");
   if (!durationInput || !unitInput || !totalStepsInput) return;
-  const recommendation = recommendScheduleScale(durationInput.value);
-  if (durationInput.dataset.lastRecommendedDuration !== String(durationInput.value || "")) {
+  const recommendation = recommendScheduleScale(durationInput.value, form.elements.startDate?.value);
+  const recommendationKey = `${durationInput.value || ""}|${form.elements.startDate?.value || ""}`;
+  if (durationInput.dataset.lastRecommendedDuration !== recommendationKey) {
     unitInput.value = recommendation.unit;
     totalStepsInput.value = recommendation.totalSteps;
-    durationInput.dataset.lastRecommendedDuration = String(durationInput.value || "");
+    durationInput.dataset.lastRecommendedDuration = recommendationKey;
   }
   if (note) note.textContent = `${recommendation.label} 필요하면 기준과 전체 칸 수는 직접 수정할 수 있습니다.`;
 }
@@ -742,6 +777,7 @@ function schedulePlanTable(data) {
     ? schedule.rows
     : [{ task: data.contract.title || "과업 수행", start: 1, end: schedule.totalSteps, note: "" }];
   const steps = Array.from({ length: schedule.totalSteps }, (_, index) => index + 1);
+  const stepLabels = scheduleStepLabels(data);
   const notesByStep = steps.map((step) =>
     rows
       .filter((row) => row.note && row.end === step)
@@ -758,7 +794,7 @@ function schedulePlanTable(data) {
       <thead>
         <tr>
           <th class="schedule-corner"><span>과업내용</span><em>공정(${schedule.unit})</em></th>
-          ${steps.map((step) => `<th>${step}</th>`).join("")}
+          ${stepLabels.map((label) => `<th>${label}</th>`).join("")}
         </tr>
       </thead>
       <tbody>
